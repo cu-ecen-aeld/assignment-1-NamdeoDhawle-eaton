@@ -1,34 +1,28 @@
 #!/bin/bash
-# writer script for ECEN5713 AESD Assignment 1
-#Author: Justin Denning
 
-#Verify we got both of the required arguments
-if [ $# -lt 2 ]; then 
-	echo "Script usage: writer.sh filename writestr"
-	echo -e "\tfilename - the full path of a file to write the string to"
-	echo -e "\twritestr - the string to write to the provided file"
-	echo -e "\nThe writestr will be writtn to the filename. The file is overwritten if it exists, and the path will be created even if it doesn't already exist"
-	exit 1
+# Check if the required number of arguments are provided
+if [ "$#" -ne 2 ]; then
+    echo "Error: Missing arguments."
+    echo "Usage: $0 <filesdir> <searchstr>"
+    exit 1
 fi
 
-#Ensure we were given a full file path
-if [[ "$1" != /* ]]; then
-	echo "filename must be a full path (meaning it must start with '/')"
-	exit 1
+filesdir="$1"
+searchstr="$2"
+
+# Check if the first argument is a directory
+if [ ! -d "$filesdir" ]; then
+    echo "Error: '$filesdir' is not a valid directory."
+    exit 1
 fi
 
-#Ensure the directory exists, or create it
-dirname=`dirname $1`
-if [ ! -d "$dirname" ]; then
-	if ! mkdir -p "$dirname"; then
-		echo "Error creating directory $dirname"
-		exit 1
-	fi
-fi
+# Count the number of files in the directory and subdirectories
+file_count=$(find "$filesdir" -type f | wc -l)
 
-#Output the provided string to the provided file
-if ! echo "$2" > "$1"; then
-	echo "Error writing string to file $1"
-	exit 1
-fi
+# Count the number of matching lines
+match_count=$(grep -r "$searchstr" "$filesdir" 2>/dev/null | wc -l)
+
+# Print the results
+echo "The number of files are $file_count and the number of matching lines are $match_count"
+
 exit 0

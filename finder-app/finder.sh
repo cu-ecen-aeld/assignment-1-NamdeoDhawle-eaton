@@ -5,6 +5,11 @@
 set -e
 set -u
 
+NUMFILES=10
+WRITESTR=AELD_IS_FUN
+WRITEDIR=/tmp/aeld-data
+username=$(cat conf/username.txt)
+
 #Verify we got both of the required arguments
 if [ $# -lt 2 ]; then 
 	echo "Script usage: finder.sh filesdir searchstr"
